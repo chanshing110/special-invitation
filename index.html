@@ -773,8 +773,8 @@
           note: noteText || "無特別備註"
         };
 
-        try {
-          if (SCRIPT_URL === "https://script.google.com/macros/s/AKfycbybxO9naX7mBSko2T-iS_OX55Nh3XELj2Bm8Ewf-35cz73VMMgeKpWS4OLmgt-gE80/exec") {
+       try {
+          if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbybxO9naX7mBSko2T-iS_OX55Nh3XELj2Bm8Ewf-35cz73VMMgeKpWS4OLmgt-gE80/exec") {
             // 預覽模式：模擬短暫傳送延遲，避免網路錯誤
             await new Promise(resolve => setTimeout(resolve, 650));
           } else {
@@ -782,7 +782,7 @@
             await fetch(SCRIPT_URL, {
               method: "POST",
               mode: "no-cors",
-              headers: { "Content-Type": "application/json" },
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
               body: JSON.stringify(payload)
             });
           }
