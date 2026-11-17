@@ -604,7 +604,7 @@
 
   <script>
     // 若要正式啟用 Google 試算表收集資料，請將下方字串替換為你的 Apps Script 網址
-    const SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbybxO9naX7mBSko2T-iS_OX55Nh3XELj2Bm8Ewf-35cz73VMMgeKpWS4OLmgt-gE80/exec";
 
     // ✨ 你可以在這裡自訂最後一頁顯示給對方的「專屬個人訊息」
     const PERSONAL_MESSAGE_CONFIG = {
@@ -774,7 +774,7 @@
         };
 
         try {
-          if (SCRIPT_URL === "YOUR_GOOGLE_SCRIPT_URL") {
+          if (SCRIPT_URL === "https://script.google.com/macros/s/AKfycbybxO9naX7mBSko2T-iS_OX55Nh3XELj2Bm8Ewf-35cz73VMMgeKpWS4OLmgt-gE80/exec") {
             // 預覽模式：模擬短暫傳送延遲，避免網路錯誤
             await new Promise(resolve => setTimeout(resolve, 650));
           } else {
