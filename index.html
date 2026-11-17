@@ -112,3 +112,656 @@
       border: 2px solid #ffe4e6;
       border-radius: 16px;
       font-size: 0.92rem;
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .custom-input:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.1);
+    }
+
+    .custom-input::placeholder {
+      color: #fda4af;
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 26px;
+      padding: 15px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #fb7185 0%, #f43f5e 100%);
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(244, 63, 94, 0.28);
+      transition: all 0.25s ease;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 24px rgba(244, 63, 94, 0.35);
+    }
+
+    .submit-btn:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes gentleBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.45s ease forwards;
+    }
+
+    .animate-gentle-bounce {
+      animation: gentleBounce 1.6s infinite ease-in-out;
+    }
+
+    @keyframes mascotSway {
+      0%, 100% { transform: rotate(-2.5deg) translateY(0px); }
+      50% { transform: rotate(2.5deg) translateY(-4px); }
+    }
+
+    @keyframes mascotPeek {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(4deg); }
+    }
+
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+
+    .mascot-sway {
+      animation: mascotSway 3.2s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    .mascot-peek {
+      animation: mascotPeek 2.4s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    .gift-pulse {
+      animation: heartPulse 2.2s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    .step-page {
+      animation: fadeIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .step-dot {
+      height: 8px;
+      width: 8px;
+      border-radius: 9999px;
+      background-color: #fecdd3;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .step-dot.active {
+      width: 26px;
+      background-color: #f43f5e;
+      box-shadow: 0 2px 8px rgba(244, 63, 94, 0.35);
+    }
+
+    .step-dot.completed {
+      background-color: #fb7185;
+    }
+
+    .nav-btn-secondary {
+      padding: 14px 18px;
+      border: 2px solid #fecdd3;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      color: #9f1239;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn-secondary:hover {
+      background: #fff1f2;
+      border-color: #fb7185;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="floating-bokeh" id="bokeh-bg"></div>
+
+  <div id="toast-box" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden transition-all duration-300 pointer-events-none">
+    <div class="bg-white/95 backdrop-blur-md border-2 border-rose-300 text-rose-700 px-5 py-3 rounded-full shadow-lg font-medium text-sm flex items-center gap-2 whitespace-nowrap">
+      <span id="toast-msg">提示訊息</span>
+    </div>
+  </div>
+
+  <main class="glass-container">
+    <div id="form-view">
+      <div class="flex flex-col items-center mb-5" aria-label="填寫進度">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="step-dot active" id="dot-1"></span>
+          <span class="step-dot" id="dot-2"></span>
+          <span class="step-dot" id="dot-3"></span>
+        </div>
+        <span id="step-label" class="text-[11px] font-bold tracking-widest text-rose-500 uppercase">
+          STEP 1 / 3 · 挑選日子
+        </span>
+      </div>
+
+      <!-- 第 1 頁：挑選日子 -->
+      <div id="step-1" class="step-page">
+        <header class="text-center mb-6">
+          <div class="flex justify-center mb-2">
+            <svg class="w-44 h-28 mascot-sway drop-shadow-sm" viewBox="0 0 220 135" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="可愛小熊與小兔情侶公仔">
+              <ellipse cx="110" cy="122" rx="76" ry="9" fill="#fecdd3" opacity="0.75"/>
+              <g transform="translate(8, 6)">
+                <circle cx="46" cy="36" r="14" fill="#d69e74" stroke="#7c4a2d" stroke-width="2.5"/>
+                <circle cx="46" cy="36" r="7" fill="#fbcfe8"/>
+                <circle cx="92" cy="36" r="14" fill="#d69e74" stroke="#7c4a2d" stroke-width="2.5"/>
+                <circle cx="92" cy="36" r="7" fill="#fbcfe8"/>
+                <path d="M40 98 C40 80, 98 80, 98 98 L95 112 L43 112 Z" fill="#d69e74" stroke="#7c4a2d" stroke-width="2.5" stroke-linejoin="round"/>
+                <ellipse cx="69" cy="60" rx="31" ry="27" fill="#e2b08a" stroke="#7c4a2d" stroke-width="2.5"/>
+                <ellipse cx="69" cy="66" rx="11" ry="8.5" fill="#fff7ed"/>
+                <ellipse cx="69" cy="63" rx="4" ry="2.8" fill="#7c4a2d"/>
+                <path d="M65 68 Q69 72 73 68" stroke="#7c4a2d" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="56" cy="57" r="3.2" fill="#4c0519"/>
+                <circle cx="55" cy="56" r="1" fill="#ffffff"/>
+                <circle cx="82" cy="57" r="3.2" fill="#4c0519"/>
+                <circle cx="81" cy="56" r="1" fill="#ffffff"/>
+                <ellipse cx="49" cy="64" rx="5.5" ry="3.2" fill="#fb7185" opacity="0.55"/>
+                <ellipse cx="89" cy="64" rx="5.5" ry="3.2" fill="#fb7185" opacity="0.55"/>
+                <circle cx="69" cy="32" r="4.5" fill="#fda4af"/>
+                <circle cx="69" cy="32" r="1.8" fill="#fff1f2"/>
+              </g>
+              <g transform="translate(88, 4)">
+                <path d="M44 38 C36 14, 50 8, 54 35" fill="#fff5f7" stroke="#9f1239" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M45 34 C41 19, 48 16, 51 33" fill="#fbcfe8"/>
+                <path d="M76 36 C86 12, 102 22, 92 46 C89 53, 83 48, 82 40" fill="#fff5f7" stroke="#9f1239" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M79 36 C85 20, 94 25, 88 42" fill="#fbcfe8"/>
+                <path d="M78 33 L72 28 L73 36 Z" fill="#f43f5e"/>
+                <path d="M78 33 L85 30 L82 37 Z" fill="#f43f5e"/>
+                <circle cx="78" cy="33" r="2.2" fill="#ffe4e6"/>
+                <path d="M36 100 C36 82, 92 82, 92 100 L89 114 L39 114 Z" fill="#fff5f7" stroke="#9f1239" stroke-width="2.5" stroke-linejoin="round"/>
+                <ellipse cx="64" cy="61" rx="29" ry="26" fill="#fff5f7" stroke="#9f1239" stroke-width="2.5"/>
+                <circle cx="52" cy="58" r="3.2" fill="#4c0519"/>
+                <circle cx="51" cy="57" r="1" fill="#ffffff"/>
+                <circle cx="76" cy="58" r="3.2" fill="#4c0519"/>
+                <circle cx="75" cy="57" r="1" fill="#ffffff"/>
+                <ellipse cx="64" cy="63" rx="2.8" ry="2" fill="#fb7185"/>
+                <path d="M60 67 Q64 70 64 66 Q64 70 68 67" stroke="#9f1239" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                <ellipse cx="45" cy="65" rx="5.5" ry="3.2" fill="#fb7185" opacity="0.6"/>
+                <ellipse cx="83" cy="65" rx="5.5" ry="3.2" fill="#fb7185" opacity="0.6"/>
+              </g>
+              <g class="gift-pulse">
+                <rect x="93" y="76" width="34" height="27" rx="6" fill="#ffe4e6" stroke="#be123c" stroke-width="2"/>
+                <rect x="90" y="71" width="40" height="8" rx="3.5" fill="#fda4af" stroke="#be123c" stroke-width="2"/>
+                <rect x="107.5" y="71" width="5" height="32" fill="#f43f5e"/>
+                <path d="M110 71 C103 63, 96 67, 102 71 Z" fill="#f43f5e" stroke="#be123c" stroke-width="1.6"/>
+                <path d="M110 71 C117 63, 124 67, 118 71 Z" fill="#f43f5e" stroke="#be123c" stroke-width="1.6"/>
+              </g>
+              <circle cx="91" cy="89" r="6.5" fill="#e2b08a" stroke="#7c4a2d" stroke-width="2"/>
+              <circle cx="129" cy="89" r="6.5" fill="#fff5f7" stroke="#9f1239" stroke-width="2"/>
+            </svg>
+          </div>
+
+          <span class="inline-block bg-[#ffe4e6] text-[#f43f5e] text-xs font-bold px-3.5 py-1.5 rounded-full mb-2.5 tracking-widest">
+            SPECIAL INVITATION
+          </span>
+          <h1 class="text-2xl font-bold text-[#4c0519] mb-1.5 tracking-wide">
+            下次見面去哪裡好呢？ 🌸
+          </h1>
+          <p class="text-sm text-[#9f1239] opacity-85 leading-relaxed">
+            第一步，先挑選一個你最舒服、方便的日子吧 ✨
+          </p>
+        </header>
+
+        <section>
+          <h2 class="font-bold text-base mb-3 text-[#4c0519] flex items-center gap-1.5">
+            <span>🗓️</span> 挑選你方便的約會日期
+          </h2>
+          <div class="grid grid-cols-2 gap-3" id="date-options">
+            <div class="option-card" data-val="本週五 晚上 🌙">本週五 晚上 🌙</div>
+            <div class="option-card" data-val="本週六 下午 ☀️">本週六 下午 ☀️</div>
+            <div class="option-card" data-val="本週六 晚上 ✨">本週六 晚上 ✨</div>
+            <div class="option-card" data-val="本週日 下午 🍰">本週日 下午 🍰</div>
+          </div>
+          <div class="mt-4">
+            <label for="custom-date" class="block text-xs text-[#9f1239] mb-1.5">
+              或是直接指定其他日期：
+            </label>
+            <input type="date" id="custom-date" class="custom-input" />
+          </div>
+        </section>
+
+        <button type="button" id="to-step-2-btn" class="submit-btn">
+          下一步：挑選想做的活動 🎀
+        </button>
+      </div>
+
+      <!-- 第 2 頁：選擇活動 -->
+      <div id="step-2" class="step-page hidden">
+        <header class="text-center mb-5">
+          <div class="flex justify-center items-end gap-3 mb-2">
+            <svg class="w-12 h-11 mascot-peek" viewBox="0 0 64 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="18" cy="18" r="8" fill="#d69e74" stroke="#7c4a2d" stroke-width="2.2"/>
+              <circle cx="18" cy="18" r="4" fill="#fbcfe8"/>
+              <circle cx="46" cy="18" r="8" fill="#d69e74" stroke="#7c4a2d" stroke-width="2.2"/>
+              <circle cx="46" cy="18" r="4" fill="#fbcfe8"/>
+              <ellipse cx="32" cy="34" rx="20" ry="17" fill="#e2b08a" stroke="#7c4a2d" stroke-width="2.2"/>
+              <circle cx="24" cy="32" r="2.3" fill="#4c0519"/>
+              <circle cx="40" cy="32" r="2.3" fill="#4c0519"/>
+              <ellipse cx="32" cy="37" rx="6.5" ry="4.8" fill="#fff7ed"/>
+              <ellipse cx="32" cy="35" rx="2.5" ry="1.7" fill="#7c4a2d"/>
+              <path d="M29 39 Q32 42 35 39" stroke="#7c4a2d" stroke-width="1.6" stroke-linecap="round"/>
+              <ellipse cx="19" cy="36" rx="3.5" ry="2" fill="#fb7185" opacity="0.55"/>
+              <ellipse cx="45" cy="36" rx="3.5" ry="2" fill="#fb7185" opacity="0.55"/>
+            </svg>
+            <svg class="w-12 h-12 mascot-sway" viewBox="0 0 64 62" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M22 28 C17 10, 27 8, 29 26" fill="#fff5f7" stroke="#9f1239" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M23 25 C20 14, 26 12, 27 25" fill="#fbcfe8"/>
+              <path d="M39 26 C44 9, 54 14, 48 31" fill="#fff5f7" stroke="#9f1239" stroke-width="2.2" stroke-linecap="round"/>
+              <ellipse cx="33" cy="40" rx="19" ry="16" fill="#fff5f7" stroke="#9f1239" stroke-width="2.2"/>
+              <circle cx="26" cy="38" r="2.3" fill="#4c0519"/>
+              <circle cx="40" cy="38" r="2.3" fill="#4c0519"/>
+              <ellipse cx="33" cy="42" rx="2.2" ry="1.5" fill="#fb7185"/>
+              <path d="M30 45 Q33 48 36 45" stroke="#9f1239" stroke-width="1.6" stroke-linecap="round"/>
+              <ellipse cx="21" cy="43" rx="3.5" ry="2" fill="#fb7185" opacity="0.6"/>
+              <ellipse cx="45" cy="43" rx="3.5" ry="2" fill="#fb7185" opacity="0.6"/>
+            </svg>
+          </div>
+          <h1 class="text-xl font-bold text-[#4c0519] mb-1">
+            想一起做什麼呢？ 🎀
+          </h1>
+          <p class="text-xs text-[#9f1239] opacity-85">
+            已選日期：<span id="selected-date-badge" class="font-bold text-rose-600 underline decoration-rose-300"></span>（可以複選多項行程喔！）
+          </p>
+        </header>
+
+        <section>
+          <div class="grid grid-cols-2 gap-3" id="activity-options">
+            <div class="option-card" data-val="浪漫餐酒館 / 晚餐">
+              <span class="text-2xl block mb-1.5">🍷</span>浪漫晚餐
+            </div>
+            <div class="option-card" data-val="看電影 / 逛展覽">
+              <span class="text-2xl block mb-1.5">🎟️</span>電影或展覽
+            </div>
+            <div class="option-card" data-val="甜點咖啡廳散步">
+              <span class="text-2xl block mb-1.5">🍓</span>甜點咖啡廳
+            </div>
+            <div class="option-card" data-val="看夜景 / 吹風聊天">
+              <span class="text-2xl block mb-1.5">🌃</span>夜景吹風
+            </div>
+            <div class="option-card" data-val="療癒手作體驗">
+              <span class="text-2xl block mb-1.5">🧸</span>手作體驗
+            </div>
+            <div class="option-card" data-val="完全交給你安排！">
+              <span class="text-2xl block mb-1.5">🎁</span>交給你安排
+            </div>
+          </div>
+        </section>
+
+        <div class="flex items-center gap-3 mt-7">
+          <button type="button" id="back-to-step-1-btn" class="nav-btn-secondary shrink-0">
+            ← 上一頁
+          </button>
+          <button type="button" id="to-step-3-btn" class="submit-btn !mt-0 flex-1">
+            下一步：留下悄悄話 ✉️
+          </button>
+        </div>
+      </div>
+
+      <!-- 第 3 頁：悄悄話與送出 -->
+      <div id="step-3" class="step-page hidden">
+        <header class="text-center mb-5">
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-rose-100/90 border-2 border-white shadow-sm mb-2.5 text-2xl">
+            ✉️
+          </div>
+          <h1 class="text-xl font-bold text-[#4c0519] mb-1">
+            最後一步！有什麼想告訴我嗎？
+          </h1>
+          <p class="text-xs text-[#9f1239] opacity-85">
+            可以寫下想吃的料理、忌口食物，或是想對我說的悄悄話 ✨
+          </p>
+        </header>
+
+        <div class="bg-rose-50/90 border border-rose-200 rounded-2xl p-3.5 mb-4 text-xs text-[#4c0519] space-y-1">
+          <div><strong class="text-rose-600">🗓️ 選定時間：</strong><span id="preview-date-text"></span></div>
+          <div><strong class="text-rose-600">🎀 期待活動：</strong><span id="preview-activities-text"></span></div>
+        </div>
+
+        <section>
+          <label for="note" class="block font-bold text-sm mb-2 text-[#4c0519]">
+            💬 給我的悄悄話或特別備註（選填）
+          </label>
+          <textarea id="note" rows="4" class="custom-input" placeholder="例如：最近超想吃某家餐廳、幾點後比較方便，或是不吃辣都可以寫在這裡..."></textarea>
+        </section>
+
+        <div class="flex items-center gap-3 mt-7">
+          <button type="button" id="back-to-step-2-btn" class="nav-btn-secondary shrink-0">
+            ← 上一頁
+          </button>
+          <div class="relative flex-1">
+            <svg class="w-11 h-9 mascot-peek absolute -top-6 right-5 z-10 pointer-events-none" viewBox="0 0 64 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="19" cy="19" r="7.5" fill="#d69e74" stroke="#7c4a2d" stroke-width="2"/>
+              <circle cx="19" cy="19" r="3.5" fill="#fbcfe8"/>
+              <circle cx="45" cy="19" r="7.5" fill="#d69e74" stroke="#7c4a2d" stroke-width="2"/>
+              <circle cx="45" cy="19" r="3.5" fill="#fbcfe8"/>
+              <path d="M15 44 C15 24, 49 24, 49 44" fill="#e2b08a" stroke="#7c4a2d" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="26" cy="32" r="2" fill="#4c0519"/>
+              <circle cx="38" cy="32" r="2" fill="#4c0519"/>
+              <ellipse cx="32" cy="36" rx="5.5" ry="4" fill="#fff7ed"/>
+              <ellipse cx="32" cy="34.5" rx="2.2" ry="1.5" fill="#7c4a2d"/>
+              <ellipse cx="21" cy="36" rx="3" ry="1.8" fill="#fb7185" opacity="0.55"/>
+              <ellipse cx="43" cy="36" rx="3" ry="1.8" fill="#fb7185" opacity="0.55"/>
+              <ellipse cx="20" cy="44" rx="4.5" ry="3" fill="#e2b08a" stroke="#7c4a2d" stroke-width="1.8"/>
+              <ellipse cx="44" cy="44" rx="4.5" ry="3" fill="#e2b08a" stroke="#7c4a2d" stroke-width="1.8"/>
+            </svg>
+            <button type="button" class="submit-btn !mt-0" id="submit-btn">
+              送出約會邀請 ✨
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 完成頁 -->
+    <div id="success-view" class="hidden text-center py-4 px-1 animate-fade-in">
+      <div class="flex justify-center mb-2">
+        <svg class="w-48 h-32 animate-gentle-bounce" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="小熊與小兔開心慶祝">
+          <path d="M35 32 L37 37 L42 39 L37 41 L35 46 L33 41 L28 39 L33 37 Z" fill="#fb7185"/>
+          <path d="M205 28 L207 33 L212 35 L207 37 L205 42 L203 37 L198 35 L203 33 Z" fill="#f43f5e"/>
+          <circle cx="52" cy="20" r="3" fill="#fda4af"/>
+          <circle cx="188" cy="20" r="3" fill="#fda4af"/>
+          <g class="gift-pulse">
+            <path d="M120 11 L126.5 25 L142 27 L130.5 38 L133.5 53 L120 45.5 L106.5 53 L109.5 38 L98 27 L113.5 25 Z" fill="#fde047" stroke="#f59e0b" stroke-width="2" stroke-linejoin="round"/>
+            <circle cx="115" cy="27" r="2" fill="#fef9c3"/>
+          </g>
+          <ellipse cx="120" cy="138" rx="82" ry="9" fill="#fecdd3" opacity="0.8"/>
+          <g transform="translate(18, 22)">
+            <circle cx="44" cy="42" r="13" fill="#d69e74" stroke="#7c4a2d" stroke-width="2.5"/>
+            <circle cx="44" cy="42" r="6" fill="#fbcfe8"/>
+            <circle cx="88" cy="42" r="13" fill="#d69e74" stroke="#7c4a2d" stroke-width="2.5"/>
+            <circle cx="88" cy="42" r="6" fill="#fbcfe8"/>
+            <path d="M88 76 Q102 52 94 34" stroke="#7c4a2d" stroke-width="11" stroke-linecap="round"/>
+            <path d="M88 76 Q102 52 94 34" stroke="#e2b08a" stroke-width="6.5" stroke-linecap="round"/>
+            <path d="M40 82 Q24 68 28 54" stroke="#7c4a2d" stroke-width="11" stroke-linecap="round"/>
+            <path d="M40 82 Q24 68 28 54" stroke="#e2b08a" stroke-width="6.5" stroke-linecap="round"/>
+            <path d="M40 104 C40 86, 92 86, 92 104 L89 116 L43 116 Z" fill="#d69e74" stroke="#7c4a2d" stroke-width="2.5" stroke-linejoin="round"/>
+            <ellipse cx="66" cy="64" rx="29" ry="25" fill="#e2b08a" stroke="#7c4a2d" stroke-width="2.5"/>
+            <path d="M51 61 Q55 56 59 61" stroke="#4c0519" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+            <path d="M73 61 Q77 56 81 61" stroke="#4c0519" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+            <ellipse cx="66" cy="70" rx="10" ry="8" fill="#fff7ed"/>
+            <ellipse cx="66" cy="67" rx="3.8" ry="2.5" fill="#7c4a2d"/>
+            <path d="M62 72 Q66 77 70 72" fill="#fb7185" stroke="#7c4a2d" stroke-width="1.6"/>
+            <ellipse cx="47" cy="68" rx="5" ry="3" fill="#fb7185" opacity="0.6"/>
+            <ellipse cx="85" cy="68" rx="5" ry="3" fill="#fb7185" opacity="0.6"/>
+          </g>
+          <g transform="translate(96, 20)">
+            <path d="M44 42 C36 18, 49 12, 53 39" fill="#fff5f7" stroke="#9f1239" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M45 38 C41 23, 48 20, 50 37" fill="#fbcfe8"/>
+            <path d="M75 40 C85 16, 100 26, 90 50 C87 56, 81 51, 80 44" fill="#fff5f7" stroke="#9f1239" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M78 40 C84 24, 92 29, 86 46" fill="#fbcfe8"/>
+            <path d="M38 78 Q24 54 32 36" stroke="#9f1239" stroke-width="11" stroke-linecap="round"/>
+            <path d="M38 78 Q24 54 32 36" stroke="#fff5f7" stroke-width="6.5" stroke-linecap="round"/>
+            <path d="M86 84 Q102 70 98 56" stroke="#9f1239" stroke-width="11" stroke-linecap="round"/>
+            <path d="M86 84 Q102 70 98 56" stroke="#fff5f7" stroke-width="6.5" stroke-linecap="round"/>
+            <path d="M36 106 C36 88, 90 88, 90 106 L87 118 L39 118 Z" fill="#fff5f7" stroke="#9f1239" stroke-width="2.5" stroke-linejoin="round"/>
+            <ellipse cx="63" cy="65" rx="28" ry="25" fill="#fff5f7" stroke="#9f1239" stroke-width="2.5"/>
+            <path d="M49 62 Q53 57 57 62" stroke="#4c0519" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+            <path d="M69 62 Q73 57 77 62" stroke="#4c0519" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+            <ellipse cx="63" cy="68" rx="2.6" ry="1.8" fill="#fb7185"/>
+            <path d="M59 72 Q63 77 67 72" fill="#fb7185" stroke="#9f1239" stroke-width="1.6"/>
+            <ellipse cx="45" cy="69" rx="5" ry="3" fill="#fb7185" opacity="0.65"/>
+            <ellipse cx="81" cy="69" rx="5" ry="3" fill="#fb7185" opacity="0.65"/>
+          </g>
+        </svg>
+      </div>
+
+      <h2 class="text-2xl font-bold text-[#f43f5e] mb-2">收到你的選擇囉！ 🌸</h2>
+
+      <div class="relative bg-gradient-to-br from-rose-50 via-white to-pink-50 border-2 border-rose-200 rounded-2xl p-4 my-3.5 text-left shadow-sm">
+        <div class="flex items-center gap-1.5 text-xs font-bold text-rose-500 tracking-wider mb-1.5">
+          <span>💌</span>
+          <span id="personal-msg-title">給最特別的你 · 專屬小紙條</span>
+        </div>
+        <p id="personal-msg-body" class="text-sm text-[#4c0519] leading-relaxed">
+          謝謝你願意把寶貴的時間留給我 ✨ 無論那天去哪裡，只要能和你一起度過就是最棒的行程了！我會把所有細節都安排好，你只要帶著好心情準時出現就好囉～
+        </p>
+        <div class="text-right text-xs font-medium text-rose-400 mt-2" id="personal-msg-sign">
+          —— 期待見面的我 🌷
+        </div>
+      </div>
+
+      <div id="summary-text" class="bg-[#fff1f2]/80 border border-dashed border-[#fda4af] rounded-2xl p-3.5 text-[#4c0519] text-xs leading-relaxed my-3 text-left space-y-1">
+      </div>
+
+      <div class="mt-5">
+        <button type="button" id="reset-btn" class="text-xs text-rose-400 hover:text-rose-600 underline underline-offset-4 transition-colors cursor-pointer bg-transparent border-none">
+          重新選擇（返回第 1 頁）
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbybxO9naX7mBSko2T-iS_OX55Nh3XELj2Bm8Ewf-35cz73VMMgeKpWS4OLmgt-gE80/exec";
+
+    const PERSONAL_MESSAGE_CONFIG = {
+      title: "給最特別的你 · 專屬小紙條",
+      body: "謝謝你願意把寶貴的時間留給我 ✨ 無論那天去哪裡，只要能和你一起度過就是最棒的行程了！我會把所有細節都安排好，你只要帶著好心情準時出現就好囉～",
+      signature: "—— 期待見面的我 🌷"
+    };
+
+    let currentStep = 1;
+    let selectedDate = "";
+    const selectedActivities = new Set();
+    let toastTimeout = null;
+
+    function showToast(message) {
+      const toastBox = document.getElementById("toast-box");
+      const toastMsg = document.getElementById("toast-msg");
+      toastMsg.textContent = message;
+      toastBox.classList.remove("hidden");
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toastBox.classList.add("hidden");
+      }, 2800);
+    }
+
+    function initFloatingBokeh() {
+      const bokehContainer = document.getElementById("bokeh-bg");
+      const pastelSymbols = ["🌸", "✨", "🫧", "🌷", "✦"];
+      for (let i = 0; i < 12; i++) {
+        const item = document.createElement("div");
+        item.className = "bokeh-item";
+        item.textContent = pastelSymbols[i % pastelSymbols.length];
+        item.style.left = Math.random() * 100 + "vw";
+        item.style.animationDuration = (10 + Math.random() * 8) + "s";
+        item.style.animationDelay = (Math.random() * 6) + "s";
+        bokehContainer.appendChild(item);
+      }
+    }
+
+    function goToStep(stepNumber) {
+      currentStep = stepNumber;
+
+      [1, 2, 3].forEach(num => {
+        const pageEl = document.getElementById(`step-${num}`);
+        const dotEl = document.getElementById(`dot-${num}`);
+        if (num === stepNumber) {
+          pageEl.classList.remove("hidden");
+          dotEl.classList.add("active");
+          dotEl.classList.remove("completed");
+        } else {
+          pageEl.classList.add("hidden");
+          dotEl.classList.remove("active");
+          if (num < stepNumber) {
+            dotEl.classList.add("completed");
+          } else {
+            dotEl.classList.remove("completed");
+          }
+        }
+      });
+
+      const stepNames = {
+        1: "STEP 1 / 3 · 挑選日子",
+        2: "STEP 2 / 3 · 選擇活動",
+        3: "STEP 3 / 3 · 悄悄話與送出"
+      };
+      document.getElementById("step-label").textContent = stepNames[stepNumber];
+
+      if (stepNumber === 2) {
+        document.getElementById("selected-date-badge").textContent = selectedDate;
+      }
+
+      if (stepNumber === 3) {
+        document.getElementById("preview-date-text").textContent = selectedDate;
+        document.getElementById("preview-activities-text").textContent = Array.from(selectedActivities).join("、");
+      }
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&',
+        '<': '<',
+        '>': '>',
+        "'": ''',
+        '"': '"'
+      }[tag]));
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initFloatingBokeh();
+
+      document.getElementById("personal-msg-title").textContent = PERSONAL_MESSAGE_CONFIG.title;
+      document.getElementById("personal-msg-body").textContent = PERSONAL_MESSAGE_CONFIG.body;
+      document.getElementById("personal-msg-sign").textContent = PERSONAL_MESSAGE_CONFIG.signature;
+
+      const dateCards = document.querySelectorAll("#date-options .option-card");
+      const customDateInput = document.getElementById("custom-date");
+      const activityCards = document.querySelectorAll("#activity-options .option-card");
+      const submitBtn = document.getElementById("submit-btn");
+      const resetBtn = document.getElementById("reset-btn");
+
+      const todayStr = new Date().toISOString().split("T")[0];
+      customDateInput.setAttribute("min", todayStr);
+
+      dateCards.forEach(card => {
+        card.addEventListener("click", () => {
+          dateCards.forEach(c => c.classList.remove("active"));
+          card.classList.add("active");
+          selectedDate = card.dataset.val;
+          customDateInput.value = "";
+        });
+      });
+
+      customDateInput.addEventListener("change", (e) => {
+        dateCards.forEach(c => c.classList.remove("active"));
+        selectedDate = e.target.value;
+      });
+
+      document.getElementById("to-step-2-btn").addEventListener("click", () => {
+        if (!selectedDate) {
+          showToast("請先選擇一個你方便的日期喔 🌸");
+          return;
+        }
+        goToStep(2);
+      });
+
+      activityCards.forEach(card => {
+        card.addEventListener("click", () => {
+          const val = card.dataset.val;
+          if (selectedActivities.has(val)) {
+            selectedActivities.delete(val);
+            card.classList.remove("active");
+          } else {
+            selectedActivities.add(val);
+            card.classList.add("active");
+          }
+        });
+      });
+
+      document.getElementById("back-to-step-1-btn").addEventListener("click", () => {
+        goToStep(1);
+      });
+
+      document.getElementById("to-step-3-btn").addEventListener("click", () => {
+        if (selectedActivities.size === 0) {
+          showToast("請至少選一項想一起做的活動吧 🎀");
+          return;
+        }
+        goToStep(3);
+      });
+
+      document.getElementById("back-to-step-2-btn").addEventListener("click", () => {
+        goToStep(2);
+      });
+
+      submitBtn.addEventListener("click", async () => {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "正在傳送邀請函...";
+
+        const noteText = document.getElementById("note").value.trim();
+        const payload = {
+          date: selectedDate,
+          activities: Array.from(selectedActivities),
+          note: noteText || "無特別備註"
+        };
+
+        try {
+          await fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload)
+          });
+
+          document.getElementById("form-view").classList.add("hidden");
+          document.getElementById("success-view").classList.remove("hidden");
+
+          const summaryContainer = document.getElementById("summary-text");
+          summaryContainer.innerHTML = `
+            <div><strong>🗓️ 約會時間：</strong><span>${escapeHTML(payload.date)}</span></div>
+            <div><strong>🎀 期待行程：</strong><span>${escapeHTML(payload.activities.join("、"))}</span></div>
+            <div><strong>✉️ 你的悄悄話：</strong><span>${escapeHTML(payload.note)}</span></div>
+          `;
+        } catch (err) {
+          showToast("傳送發生一點小問題，請再試一次！");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "送出約會邀請 ✨";
+        }
+      });
+
+      resetBtn.addEventListener("click", () => {
+        document.getElementById("success-view").classList.add("hidden");
+        document.getElementById("form-view").classList.remove("hidden");
+        goToStep(1);
+      });
+    });
+  </script>
+</body>
+</html>
