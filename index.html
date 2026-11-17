@@ -603,7 +603,6 @@
   </main>
 
   <script>
-    // 若要正式啟用 Google 試算表收集資料，請將下方字串替換為你的 Apps Script 網址
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbybxO9naX7mBSko2T-iS_OX55Nh3XELj2Bm8Ewf-35cz73VMMgeKpWS4OLmgt-gE80/exec";
 
     // ✨ 你可以在這裡自訂最後一頁顯示給對方的「專屬個人訊息」
@@ -761,7 +760,7 @@
         goToStep(2);
       });
 
-      // 第 3 頁：送出表單處理
+      // 第 3 頁：送出表單處理（直接傳送至 Google Apps Script）
       submitBtn.addEventListener("click", async () => {
         submitBtn.disabled = true;
         submitBtn.textContent = "正在傳送邀請函...";
@@ -773,19 +772,13 @@
           note: noteText || "無特別備註"
         };
 
-       try {
-          if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbybxO9naX7mBSko2T-iS_OX55Nh3XELj2Bm8Ewf-35cz73VMMgeKpWS4OLmgt-gE80/exec") {
-            // 預覽模式：模擬短暫傳送延遲，避免網路錯誤
-            await new Promise(resolve => setTimeout(resolve, 650));
-          } else {
-            // 正式模式：傳送至 Google Apps Script
-            await fetch(SCRIPT_URL, {
-              method: "POST",
-              mode: "no-cors",
-              headers: { "Content-Type": "text/plain;charset=utf-8" },
-              body: JSON.stringify(payload)
-            });
-          }
+        try {
+          await fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload)
+          });
 
           // 切換至完成畫面並渲染摘要與專屬個人訊息
           document.getElementById("form-view").classList.add("hidden");
@@ -816,11 +809,11 @@
     // 防止 XSS 的簡易字元轉義
     function escapeHTML(str) {
       return str.replace(/[&<>'"]/g, tag => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        "'": '&#39;',
-        '"': '&quot;'
+        '&': '&',
+        '<': '<',
+        '>': '>',
+        "'": ''',
+        '"': '"'
       }[tag]));
     }
   </script>
